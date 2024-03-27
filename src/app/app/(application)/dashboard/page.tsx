@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
-
 import CheckIcon from "@/images/easytolive/icons/checkIcon.svg";
 import CouponPrimary from "@/images/easytolive/icons/couponPrimary.svg";
 import DashboardIcon from "@/images/easytolive/icons/dashboardIcon.svg";

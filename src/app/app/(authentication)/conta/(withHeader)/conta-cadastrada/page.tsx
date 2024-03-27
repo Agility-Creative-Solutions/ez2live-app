@@ -5,7 +5,7 @@ import Image from "next/image";
 import Checked from "@/images/easytolive/icons/checked-success.svg";
 import { ButtonPrimary, ButtonThird } from "@/components";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import authService from "@/service/auth.service";
 import { showToastify } from "@/hooks/showToastify";
 
@@ -63,11 +63,23 @@ const SupplierRegistered = () => {
 
   const { data: session } = useSession();
   const isSupplier = params.get("isSupplier") === "1";
+
+  async function Logout() {
+    return await signOut({
+      redirect: false,
+    });
+  }
+
   useEffect(() => {
     if (session?.user.isVerified === true) {
       router.push(isSupplier ? "/app/dashboard" : "/app");
     }
   }, []);
+
+  useEffect(() => {
+    if (isSupplier) Logout();
+  });
+
   // by url query param
   const message = isSupplier
     ? "Sua conta foi criada para análise do nosso time. Quando for aprovada você receberá um e-mail com as instruções para acessar sua conta."

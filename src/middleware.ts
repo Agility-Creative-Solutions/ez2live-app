@@ -35,6 +35,18 @@ export async function middleware(request: NextRequest) {
       ),
     );
   }
+  if (
+    tokenInfo?.user.role === ROLES.supplier &&
+    !tokenInfo?.user.supplierInfo?.isVerified &&
+    request.nextUrl.pathname === "/app"
+  ) {
+    return NextResponse.redirect(
+      new URL(
+        "/app/conta/conta-cadastrada?isSupplier=1" ?? "/app",
+        request.url,
+      ),
+    );
+  }
 
   if (
     (tokenInfo?.user.role === ROLES.supplier ||
