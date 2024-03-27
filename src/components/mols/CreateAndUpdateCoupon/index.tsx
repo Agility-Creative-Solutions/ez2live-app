@@ -12,6 +12,7 @@ import {
   Modal,
   TextArea,
 } from "@/components";
+import dayjs from "dayjs";
 import * as Yup from "yup";
 import { ICoupon, ICreateCoupon, IGetCouponInfo } from "@/types/coupons";
 import couponService from "@/service/coupons.service";
@@ -20,7 +21,7 @@ import couponsService from "@/service/coupons.service";
 import Image from "next/image";
 import Easy2LiveLogo from "@/images/easytolive/logo/logotipo-semfundoazulroxo.svg";
 import { ISupplier } from "@/types/supplier";
-
+import setFinalOfTheDay from "@/utils/setFinalOfTheDay";
 interface ICreateOrUpdateCoupon {
   setCouponModal: React.Dispatch<React.SetStateAction<boolean>>;
   isUpdatingCoupon?: boolean;
@@ -137,10 +138,10 @@ const CreateOrUpdateCoupon: React.FC<ICreateOrUpdateCoupon> = ({
     maxPerUser: Yup.string().required("Limite de cupons por usuário."),
     expirationGenerationDate: Yup.date()
       .required("Data de validade para geração do cupom.")
-      .min(new Date(), "Selecione uma data maior que a atual"),
+      .min(dayjs().subtract(1, "day"), "Selecione uma data maior que a atual"),
     expirationUseDate: Yup.date()
       .required("Data limite para utilização do cupom.")
-      .min(new Date(), "Selecione uma data maior que a atual"),
+      .min(dayjs().subtract(1, "day"), "Selecione uma data maior que a atual"),
   });
 
   const UpdateCouponValidationSchema = Yup.object().shape({
@@ -173,8 +174,10 @@ const CreateOrUpdateCoupon: React.FC<ICreateOrUpdateCoupon> = ({
       discount: String(values.discount),
       maxPerUser: unlimitedByUser ? -1 : Number(values.maxPerUser),
       maxTotal: couponsUnlimited ? -1 : Number(values.maxTotal),
-      expirationGenerationDate: new Date(values.expirationGenerationDate),
-      expirationUseDate: new Date(values.expirationUseDate),
+      expirationGenerationDate: new Date(
+        setFinalOfTheDay(values.expirationGenerationDate),
+      ),
+      expirationUseDate: new Date(setFinalOfTheDay(values.expirationUseDate)),
     };
     const updateData = {
       ...(coupon?.title !== values.title && { title: values.title }),
