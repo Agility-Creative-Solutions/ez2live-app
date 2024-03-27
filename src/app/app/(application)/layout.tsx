@@ -10,9 +10,11 @@ import {
 import isDateValid from "@/utils/isDateValid";
 import { useSession } from "next-auth/react";
 import useUserRoles from "@/hooks/useUserRoles";
+import { useCompleteSupplierRegister } from "@/components/mols/CompleteSupplierRegister/Context";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
   const { data: session } = useSession();
+  const { isUpdate } = useCompleteSupplierRegister();
   const [isPremiumExpired, setIsPremiumExpired] = useState(false);
 
   const isCommomUser = useUserRoles().isCommonUser();
@@ -37,12 +39,13 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
           userId={session.user.id}
         />
       )}
-      {session?.user &&
-        !session.user.supplierInfo?.supplierBanner &&
-        !session.user.supplierInfo?.supplierLogo &&
-        !session.user.supplierInfo?.supplierDescription && (
-          <CompleteSupplierRegister />
-        )}
+      {!!(
+        isUpdate ||
+        (session?.user &&
+          !session.user.supplierInfo?.supplierBanner &&
+          !session.user.supplierInfo?.supplierLogo &&
+          !session.user.supplierInfo?.supplierDescription)
+      ) && <CompleteSupplierRegister />}
       {session?.user ? <HeaderLogged /> : <Header />}
       <div className="app-layout__container">{children}</div>
     </div>

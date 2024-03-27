@@ -17,6 +17,8 @@ import supplierService from "@/service/supplier.service";
 import { showToastify } from "@/hooks/showToastify";
 import { LoadingComponent } from "@/components";
 
+import { useCompleteSupplierRegister } from "@/components/mols/CompleteSupplierRegister/Context";
+
 interface IDashboardData {
   couponsGenerated: number;
   couponsActivated: number;
@@ -35,6 +37,7 @@ const PageDashboard = () => {
   const { data: session } = useSession();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { setUpdate } = useCompleteSupplierRegister();
   const [dashboardData, setDashboardData] = useState<IDashboardItems[]>();
 
   const getSupplierData = async (supplierId: string) =>
@@ -90,7 +93,7 @@ const PageDashboard = () => {
     <div className="relative overflow-hidden flex gap-3 p-5 max-w-screen-2xl mx-auto flex-col sm:flex-row">
       <div className="md:flex flex-col sm:w-[300px] w-full pb-5 mb-3 sm:mb-0 border-b border-gray-100 sm:border-none">
         <div className="flex flex-col w-full gap-5 rounded-lg bg-[#e7eaf133] px-2">
-          <div className="flex flex-col w-full h-24 gap-5 relative">
+          <div className="group/item flex flex-col w-full h-36 relative overflow-hidden">
             <div
               className={classNames(!supplierBanner && "bg-primary-main")}
               style={{
@@ -132,6 +135,15 @@ const PageDashboard = () => {
                 </div>
               </div>
             </div>
+            <button
+              onClick={() => setUpdate(true)}
+              className={classNames(
+                "text-white absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-gray-600 to-transparent overflow-hidden transition-all translate-y-[100%] group-hover/item:translate-y-0",
+              )}
+              style={{ backdropFilter: "blur(10px)" }}
+            >
+              Editar perfil
+            </button>
           </div>
 
           {/* validate coupon */}

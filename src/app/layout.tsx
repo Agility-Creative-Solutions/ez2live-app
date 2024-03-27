@@ -16,6 +16,7 @@ import ToastProvider from "@/providers/ToastProvider";
 
 import { authOptions } from "./api/auth/[...nextauth]/route";
 import CommonClient from "./CommonClient";
+import { CompleteSupplierRegisterProvider } from "@/components/mols/CompleteSupplierRegister/Context";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -40,7 +41,11 @@ export default async function RootLayout({
       <body className="bg-generic-background text-base dark:bg-neutral-900 text-neutral-900 dark:text-neutral-200">
         <ToastProvider>
           <AuthProvider session={session}>
-            <SupplierProvider>{children}</SupplierProvider>
+            <SupplierProvider>
+              <CompleteSupplierRegisterProvider>
+                {children}
+              </CompleteSupplierRegisterProvider>
+            </SupplierProvider>
             <CommonClient />
           </AuthProvider>
         </ToastProvider>
