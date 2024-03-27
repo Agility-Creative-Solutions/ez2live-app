@@ -87,16 +87,18 @@ const SupplierRegistered = () => {
       >
         Visite nosso site
       </ButtonPrimary>
-      <div className="flex flex-col items-center">
-        <p className="mb-0 mt-24 p-0">{textEmaiVerification}</p>
-        <ButtonThird
-          onClick={() => sendVerificationEmail()}
-          disabled={disableButton}
-          className="sm:py-2 sm:my-0 sm:text-xs text-primary-main"
-        >
-          Enviar email de confirmação
-        </ButtonThird>
-      </div>
+      {!isSupplier && (
+        <div className="flex flex-col items-center">
+          <p className="mb-0 mt-24 p-0">{textEmaiVerification}</p>
+          <ButtonThird
+            onClick={() => sendVerificationEmail()}
+            disabled={disableButton}
+            className="sm:py-2 sm:my-0 sm:text-xs text-primary-main"
+          >
+            Enviar email de confirmação
+          </ButtonThird>
+        </div>
+      )}
     </div>
   );
 };
