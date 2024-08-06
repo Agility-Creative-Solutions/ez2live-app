@@ -3,19 +3,7 @@ import { ButtonPrimary, SimpleModal } from "@/components";
 import Image from "next/image";
 import RefusedIcon from "@/images/easytolive/icons/refused-icon.svg";
 
-interface IRejectedPaymentStepProps {
-  setCurrentStep: React.Dispatch<React.SetStateAction<number>>;
-}
-
-export const RejectedPaymentStep: React.FC<IRejectedPaymentStepProps> = ({
-  setCurrentStep,
-}) => {
-  const STEPS = {
-    PAYMENT: 0,
-    LOADING_PAYMENT: 1,
-    PAYMENT_ACCEPT: 2,
-    PAYMENT_REJECT: 3,
-  };
+export const RejectedPaymentStep = () => {
   return (
     <div className="flex flex-col items-center">
       <SimpleModal className="text-center">
@@ -30,10 +18,7 @@ export const RejectedPaymentStep: React.FC<IRejectedPaymentStepProps> = ({
           de pagamento.
         </p>
       </SimpleModal>
-      <ButtonPrimary
-        onClick={() => setCurrentStep(STEPS.PAYMENT)}
-        className="w-full"
-      >
+      <ButtonPrimary href="/app/pagamento" className="w-full">
         Tentar Novamente
       </ButtonPrimary>
     </div>

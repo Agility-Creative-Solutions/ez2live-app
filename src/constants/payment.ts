@@ -15,7 +15,7 @@ export const SUBSCRIPTION_STATUS = {
 export const INVOICE_STATUS = {
   PENDING: "pending",
   PAID: "paid",
-  CANCELLED: "cancelled",
+  CANCELLED: "canceled",
   PARTIALLY_PAID: "partially_paid",
   REFUNDED: "refunded",
   EXPIRED: "expired",

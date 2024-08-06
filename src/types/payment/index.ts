@@ -14,5 +14,6 @@ export interface IPixPayment {
 
 export interface IPaymentResponseData {
   invoiceId: string;
+  secureUrl: string;
   qrCodeValue?: { image: string; text: string };
 }

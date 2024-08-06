@@ -5,25 +5,20 @@ import { Input, ButtonPrimary, FormItem } from "@/components";
 import * as Yup from "yup";
 import Image from "next/image";
 import PixImage from "@/images/easytolive/payment/pix-image.svg";
-import { IPixPayment, IPaymentResponseData } from "@/types/payment";
+import { IPixPayment } from "@/types/payment";
 import subscriptionService from "@/service/subscription.service";
 import { useSession } from "next-auth/react";
 import { showToastify } from "@/hooks/showToastify";
+import { useRouter } from "next/navigation";
 
 interface IPixPaymentProps {
   currentStepPayment: React.Dispatch<React.SetStateAction<number>>;
-  setPaymentResponseData: React.Dispatch<
-    React.SetStateAction<IPaymentResponseData>
-  >;
 }
 
-const PixPayment: React.FC<IPixPaymentProps> = ({
-  currentStepPayment,
-  setPaymentResponseData,
-}) => {
+const PixPayment: React.FC<IPixPaymentProps> = ({ currentStepPayment }) => {
   const [loading, setLoading] = useState(false);
   const { data: session, update } = useSession();
-
+  const route = useRouter();
   const updateSession = async (responseData: any) => {
     await update({
       ...session,
@@ -50,14 +45,9 @@ const PixPayment: React.FC<IPixPaymentProps> = ({
       .createSubscriptionPix(values.cpf)
       .then((res: any) => {
         updateSession(res.data.user);
-        setPaymentResponseData({
-          invoiceId: res.data.subscriptionResponse.recentInvoiceId,
-          qrCodeValue: {
-            image: res.data.subscriptionResponse.pix.qrCode,
-            text: res.data.subscriptionResponse.pix.qrCodeText,
-          },
-        });
-        currentStepPayment(1);
+        route.push(
+          `/app/aguardando-pagamento?invoice=${res.data.subscriptionResponse.recentInvoiceId}`,
+        );
       })
       .catch((res: any) => {
         if (res.status === 400) {

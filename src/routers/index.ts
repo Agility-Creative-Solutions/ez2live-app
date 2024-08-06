@@ -8,7 +8,12 @@ export const PRIVATE_ROUTES_CONFIG = [
   },
   {
     path: "/app/pagamento",
-    roles: [ROLES.commonUser, ROLES.supplier],
+    roles: [ROLES.commonUser],
+    isPublic: false,
+  },
+  {
+    path: "/app/aguardando-pagamento",
+    roles: [ROLES.commonUser],
     isPublic: false,
   },
   { path: "/app/admin", roles: [ROLES.admin], isPublic: false },

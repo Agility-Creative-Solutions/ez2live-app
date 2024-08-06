@@ -1,27 +1,25 @@
 "use client";
 import React, { useState } from "react";
-import { ICreditCardPayment, IPaymentResponseData } from "@/types/payment";
+import { ICreditCardPayment } from "@/types/payment";
 import useIugu from "@/payment/iugu";
 import subscriptionService from "@/service/subscription.service";
 import { useSession } from "next-auth/react";
 import { showToastify } from "@/hooks/showToastify";
 import { INVOICE_STATUS, SUBSCRIPTION_STATUS } from "@/constants/payment";
 import { CreditCardForm } from "@/components";
+import { useRouter } from "next/navigation";
 
 interface ICreditCardPaymentProps {
   currentStepPayment: React.Dispatch<React.SetStateAction<number>>;
-  setPaymentResponseData: React.Dispatch<
-    React.SetStateAction<IPaymentResponseData>
-  >;
 }
 
 const CreditCardPayment: React.FC<ICreditCardPaymentProps> = ({
   currentStepPayment,
-  setPaymentResponseData,
 }) => {
   const [loading, setLoading] = useState(false);
   const Iugu = useIugu(process.env.NEXT_PUBLIC_IUGU_ID);
   const { data: session, update } = useSession();
+  const route = useRouter();
 
   const updateSession = async (responseData: any) => {
     const {
@@ -50,7 +48,9 @@ const CreditCardPayment: React.FC<ICreditCardPaymentProps> = ({
         currentStepPayment(2);
         break;
       case INVOICE_STATUS.PENDING:
-        currentStepPayment(1);
+        route.push(
+          `/app/aguardando-pagamento?invoice=${paymentStatus.recentInvoiceId}`,
+        );
         break;
       case INVOICE_STATUS.CANCELLED:
         showToastify({
@@ -67,7 +67,6 @@ const CreditCardPayment: React.FC<ICreditCardPaymentProps> = ({
     const fragmentedName = values.fullName.split(" ");
     const firstName = fragmentedName[0];
     const lastName = fragmentedName.slice(1).join(" ");
-
     const iuguData = {
       number: values.creditCard,
       first_name: firstName,
@@ -84,9 +83,6 @@ const CreditCardPayment: React.FC<ICreditCardPaymentProps> = ({
     await subscriptionService
       .createSubscriptionCreditCard(iuguJsToken.id)
       .then((res: any) => {
-        setPaymentResponseData({
-          invoiceId: res.data.subscriptionResponse.recentInvoiceId,
-        });
         handlePaymentStatus(res);
       })
       .catch((res: any) => {
