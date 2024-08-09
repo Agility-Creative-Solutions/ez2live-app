@@ -12,6 +12,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 import AuthProvider from "@/providers/SessionProvider";
 import { SupplierProvider } from "@/providers/SuppliersProvider";
+import { PaymentInvoiceProvider } from "@/providers/paymentInvoice";
 import ToastProvider from "@/providers/ToastProvider";
 
 import { authOptions } from "./api/auth/[...nextauth]/route";
@@ -42,9 +43,11 @@ export default async function RootLayout({
         <ToastProvider>
           <AuthProvider session={session}>
             <SupplierProvider>
-              <CompleteSupplierRegisterProvider>
-                {children}
-              </CompleteSupplierRegisterProvider>
+              <PaymentInvoiceProvider>
+                <CompleteSupplierRegisterProvider>
+                  {children}
+                </CompleteSupplierRegisterProvider>
+              </PaymentInvoiceProvider>
             </SupplierProvider>
             <CommonClient />
           </AuthProvider>

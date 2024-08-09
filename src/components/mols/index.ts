@@ -20,6 +20,7 @@ export { default as NavidationItem } from "./Navigation/NavigationItem";
 export { default as NavidationMobile } from "./Navigation/NavMobile";
 export { default as OneStepToPayment } from "./OneStepToPayment";
 export { default as TrialConversionModal } from "./TrialConversionModal";
+export { default as PaymentPending } from "./PaymentPending";
 export { default as PaymentMethod } from "./PaymentMethod";
 export { default as PaymentMethodEmpty } from "./PaymentMethodEmpty";
 export { default as PixPayment } from "./SubscriptionPixPayment";

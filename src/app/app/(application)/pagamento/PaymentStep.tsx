@@ -10,6 +10,7 @@ import {
 } from "@/components";
 import { INVOICE_STATUS } from "@/constants/payment";
 import { PAYMENT } from "@/constants/paymentMethods";
+import { usePaymentInvoiceContext } from "@/providers/paymentInvoice";
 import subscriptionService from "@/service/subscription.service";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -27,13 +28,17 @@ export const PaymentStep: React.FC<IPaymentStepProps> = ({
 }) => {
   const [loading, setLoading] = useState(true);
   const route = useRouter();
+  const { setHasPaymentPending } = usePaymentInvoiceContext();
 
   const getLastInvoiceInfo = async () => {
     subscriptionService
       .getLastInvoice()
       .then((res: any) => {
         if (res.data.status === INVOICE_STATUS.PENDING) {
+          setHasPaymentPending(true);
           route.push("/app/aguardando-pagamento");
+        } else {
+          setHasPaymentPending(false);
         }
       })
       .finally(() => setLoading(false));

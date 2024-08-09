@@ -3,16 +3,13 @@ import Image from "next/image";
 import EasyLogo from "@/images/easytolive/logo/logotipo-semfundoazulroxo.svg";
 import {
   ButtonPrimary,
-  ButtonSecondary,
   ButtonThird,
   LoadingComponent,
   Modal,
   CreditCard,
   AddPaymentMethod,
 } from "@/components";
-import userService from "@/service/users.service";
 import { showToastify } from "@/hooks/showToastify";
-import { useSession } from "next-auth/react";
 import { Session } from "next-auth";
 import { getDateFormater } from "@/utils/getDateFormater";
 import {
@@ -20,8 +17,6 @@ import {
   IGetSubscriptionResponse,
 } from "@/types/subscription/response/index";
 import subscriptionService from "@/service/subscription.service";
-import { SUBSCRIPTION_STATUS } from "@/constants/payment";
-import { useSearchParams } from "next/navigation";
 
 interface SubscriptionProps {
   session: Session | null;
@@ -43,20 +38,6 @@ export const SubscriptionTab: React.FC<SubscriptionProps> = ({
   const [loading, setLoading] = useState(false);
   const [hasSubscriptionSuspensed, setHasSubscriptionSuspensed] =
     useState(false);
-  const params = useSearchParams();
-  const trialButtonTest = params.get("trial_end_test");
-  const { update } = useSession();
-
-  const updateSession = async (newSubscriptionTrialEndDate: string) => {
-    await update({
-      ...session,
-      user: {
-        ...session?.user,
-        subscriptionTrialEndDate: newSubscriptionTrialEndDate,
-        subscriptionStatus: SUBSCRIPTION_STATUS.TRIAL_ENDED,
-      },
-    });
-  };
 
   const suspendSubscription = async () => {
     const res = await subscriptionService.suspendSubscription();
@@ -96,25 +77,6 @@ export const SubscriptionTab: React.FC<SubscriptionProps> = ({
       .then(() => setIsCancelSubscriptionModalOpen(false));
     setLoading(false);
   };
-  //TODO:REMOVE THIS CODE BEFORE IT GOES LIVE--------------------------
-  const handleCancelFreeTrial = async () => {
-    session &&
-      (await userService
-        .removeSubscriptionDays(session?.user.id, 30)
-        .then((res: any) => {
-          updateSession(res.data.user.subscriptionTrialEndDate);
-        })
-        .then(() => {
-          showToastify({ label: "Trial removido", type: "success" });
-        })
-        .catch(() => {
-          showToastify({
-            label: "Ocorreu um erro ao remover seu período grátis",
-            type: "error",
-          });
-        }));
-  };
-  //----------------------------------------------------------------------
   const hasSubscriptionId = session?.user.iuguSubscriptionId;
   const hasIuguId = !!session?.user?.iuguCustomerId;
 
@@ -294,15 +256,6 @@ export const SubscriptionTab: React.FC<SubscriptionProps> = ({
       >
         Quero os melhores descontos
       </ButtonPrimary>
-      {session?.user.subscriptionTrialEndDate !== null &&
-        session?.user.iuguCustomerId === null &&
-        trialButtonTest && (
-          <div className="mt-10">
-            <ButtonSecondary onClick={() => handleCancelFreeTrial()}>
-              Cancelar período grátis
-            </ButtonSecondary>
-          </div>
-        )}
     </div>
   );
 };

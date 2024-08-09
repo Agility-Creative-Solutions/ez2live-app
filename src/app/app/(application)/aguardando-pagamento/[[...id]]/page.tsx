@@ -18,6 +18,7 @@ import { IPaymentResponseData } from "@/types/payment";
 import { INVOICE_STATUS } from "@/constants/payment";
 import { useRouter } from "next/navigation";
 import { Route } from "next";
+import { usePaymentInvoiceContext } from "@/providers/paymentInvoice";
 
 interface IWaitingApprovalPageProps {
   params: {
@@ -32,6 +33,7 @@ const WaitingApprovalPage: React.FC<IWaitingApprovalPageProps> = ({
   const [loading, setLoading] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("creditCard");
   const { id } = params;
+  const { setHasPaymentPending } = usePaymentInvoiceContext();
 
   const [paymentResponseData, setPaymentResponseData] =
     useState<IPaymentResponseData>({
@@ -49,6 +51,7 @@ const WaitingApprovalPage: React.FC<IWaitingApprovalPageProps> = ({
     switch (status) {
       case INVOICE_STATUS.PENDING:
         setPaymentMethod(payableWith);
+        setHasPaymentPending(true);
         setPaymentResponseData({
           invoiceId: id,
           secureUrl: secureUrl,
@@ -64,10 +67,12 @@ const WaitingApprovalPage: React.FC<IWaitingApprovalPageProps> = ({
 
       case INVOICE_STATUS.PAID:
         router.push(`/app/pagamento?step=aprovado`);
+        setHasPaymentPending(false);
         break;
 
       case INVOICE_STATUS.CANCELLED:
         router.push(`/app/pagamento?step=recusado`);
+        setHasPaymentPending(false);
         break;
 
       default:
